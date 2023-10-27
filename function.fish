@@ -20,5 +20,19 @@ function sword --description 'pnpm, yarn, npm wrapper'
     end
     set project_directory (dirname "$project_directory")
   end
-  echo found: "$package_json_path"
+
+  set -l package_manager ""
+  if [ -f (path_join "$project_directory" package-lock.json) ]
+    set package_manager npm
+  else if [ -f (path_join "$project_directory" yarn.lock) ]
+    set package_manager yarn
+  else if [ -f (path_join "$project_directory" pnpm-lock.yaml) ]
+    set package_manager pnpm
+  else if set -q SWORDFISH_DEFAULT_PACKAGE_MANAGER
+    set package_manager "$SWORDFISH_DEFAULT_PACKAGE_MANAGER"
+  else
+    echo "cannot find Node.js package manager" >&2
+    return 2
+  end
+  "$package_manager" $argv
 end
