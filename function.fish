@@ -2,10 +2,14 @@ function sword --description 'pnpm, yarn, npm wrapper'
   set -l directory (pwd)
   set -l package_json_path ""
 
+  function path_join
+    string join / (string trim -c / -r $argv)
+  end
+
   while true
     set \
       package_json_path \
-      (string join / (string trim -c / -r "$directory") package.json)
+      (path_join "$directory" package.json)
     if [ -f "$package_json_path" ]
       break
     end
