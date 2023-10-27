@@ -1,5 +1,5 @@
 function sword --description 'pnpm, yarn, npm wrapper'
-  set -l directory (pwd)
+  set -l project_directory (pwd)
   set -l package_json_path ""
 
   function path_join
@@ -9,16 +9,16 @@ function sword --description 'pnpm, yarn, npm wrapper'
   while true
     set \
       package_json_path \
-      (path_join "$directory" package.json)
+      (path_join "$project_directory" package.json)
     if [ -f "$package_json_path" ]
       break
     end
 
-    if [ "$directory" = / ]
+    if [ "$project_directory" = / ]
       echo not in Node.js project >&2
       return 1
     end
-    set directory (dirname "$directory")
+    set project_directory (dirname "$project_directory")
   end
   echo found: "$package_json_path"
 end
